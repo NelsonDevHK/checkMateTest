@@ -33,10 +33,6 @@ const auth = getAuth(app);
 export default function Home() {
   //Next.js router
   const router = useRouter();
-  useEffect(()=>{
-    const response =  getRedirectResult(auth);
-    console.log(response);
-  },[]);
   
   // Task 1: Implement Google Sign in with Firebase
   // https://firebase.google.com/docs/auth/web/google-signin
