@@ -1,9 +1,10 @@
 import Head from 'next/head'
 import GoogleButton from 'react-google-button'
-import {getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider} from "firebase/auth";
+import {getAuth, signInWithRedirect,getRedirectResult,GoogleAuthProvider} from "firebase/auth";
 import {useRouter} from "next/router";
 import { initializeApp } from 'firebase/app';
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
+
 
 // Task 0: Initialize Firebase
 // Replace the following with your app's Firebase project configuration
@@ -29,25 +30,51 @@ provider.setCustomParameters({
 // Firebase Auth instance
 const auth = getAuth(app);
 
-
 export default function Home() {
   //Next.js router
   const router = useRouter();
-  
+
   // Task 1: Implement Google Sign in with Firebase
   // https://firebase.google.com/docs/auth/web/google-signin
+
+  ////////////////////////      implement ONE:  load at second time     //////////////////////////
+  // const signIn = () => {
+  //  
+  //   signInWithRedirect(auth, provider);
+  //   router.replace('/signed-in');
+  // }
+
+
+
+  ////////////////////////      implement TWo:  load for some time     //////////////////////////
+
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if the user is signed in
+    getRedirectResult(auth)
+      .then((result) => {
+        // Step 3: Check if the user is signed in
+        if (result.user) {
+          // Set the state to indicate that the user is signed in
+          setIsSignedIn(true);
+          // Step 4: Redirect the user to the signed-in page using Next.js router
+          router.push('/signed-in');
+        }
+      })
+      .catch((error) => {
+        // handle the sign-in error here
+        console.log(error);
+      });
+  }, []);
+
   const signIn = () => {
     /*
     1. Use the GoogleAuthProvider to sign in with Firebase
     2. Use signInWithRedirect to redirect the user to the Google sign in page
-    3. (Optional) Use getRedirectResult to get the result of the redirect and check out what is inside :)
-    4. Redirect the user to the signed-in page using Next.js router
     */
     signInWithRedirect(auth, provider);
-    router.push('/signed-in');
-      
   }
-
   return (
     <>
       <Head>
